@@ -9,16 +9,30 @@ key: str = os.environ.get("SUPABASE_KEY")
 
 supabase: Client = create_client(url, key)
 
+def get_user_data():
+    user = supabase.auth.get_user()
+    user_info = user.model_dump()
+
+    return {
+        'user_id': user_info.get('user')['id'],
+    }
+
 def api_login(user, cpass):
     session = supabase.auth.sign_in_with_password({ "email": user, "password": cpass })
-    
-    return session, True
 
-def api_register(user, cpass, username):
-    session = supabase.auth.sign_up_with_password({ "email": user, "password": cpass, "data": {
-    "username": username
-  }})
-    return session
+    return session, True
+def api_register(email: str, cpass: str, username: str):
+    supabase.auth.sign_up({ "email": email, "password": cpass })
+    user = supabase.auth.get_user()
+    
+    user_info = user.model_dump()
+    user_id = user_info.get('user')['id']
+
+    if user_id:
+        supabase.table('Profiles').insert({"profile_id": user_id, "username": username}).execute()
+        return True
+    else:
+        return False
 
 def get_messages():
     
@@ -33,11 +47,13 @@ def get_messages():
         }
         better_messages.append(formatted_message)
 
-    print(better_messages)
     return better_messages
 
 def send_message(message):
-    session = supabase.auth.get_session()
-    supabase.table('Messages').insert([{'user': session.user.user_metadata.username, 'message': message}]).execute()
+    user_id = get_user_data().get('user_id')
 
+    user_profile = supabase.table('Profiles').select('username').eq('profile_id', user_id).execute()
+    username = user_profile.data[0]['username']
+
+    supabase.table('Messages').insert([{'user': username, 'message': message}]).execute()
 
