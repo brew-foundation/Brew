@@ -84,15 +84,36 @@ def signup():
 
 def send():
     message_text = Message.get()
-    send_message(message_text)
 
-    sent = ToastNotification(
-        title="Message has been sent!",
-        message="Your message has been sent to Brew's servers",
-        duration=5000,
-        alert=False
-    )
-    sent.show_toast()
+    count = len(message_text)
+
+    if count <= 300:
+
+        if previous_message == message_text:
+            messageSame = ToastNotification( 
+                title="Message blocked!",
+                message="Please change your message as its the same.",
+                duration=5000,
+                alert=True
+            )
+        previous_message = message_text
+        send_message(message_text)
+
+        sent = ToastNotification(
+            title="Message has been sent!",
+            message="Your message has been sent to Brew's servers",
+            duration=5000,
+            alert=False
+        )
+        sent.show_toast()
+    else:
+        charLimit = ToastNotification(
+            title="Message couldn't be sent!",
+            message=f"Your message is greater than 300 characters. Message had {count} characters.",
+            duration=10000,
+            alert=True
+        )
+        charLimit.show_toast()
 
 #* Login area
 logLabelFrame = ttk.LabelFrame(root, text=" Brew Account ",bootstyle="light")
