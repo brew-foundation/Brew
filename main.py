@@ -46,8 +46,9 @@ def update_messages():
         # Add the newly created label to the list for tracking
         messages_widgets.append(message_label)
 
+    messages.yview_scroll(50, 'px')
     # Schedule the next update
-    root.after(10000, update_messages)
+    root.after(1000, update_messages)
 
 def login():
     global authSuccess  # Indicate that we're using the global variable
@@ -117,8 +118,9 @@ navbar = ttk.Notebook(root, bootstyle="dark")
 
 discoverFrame = ttk.Frame(navbar)
 
-messages = ScrolledFrame(discoverFrame, autohide=True)
-messages.pack(fill=BOTH, expand=YES, padx=10, pady=10)
+messages = ScrolledFrame(discoverFrame, autohide=True, height=600)
+messages.enable_scrolling()
+messages.pack(fill='both', expand=YES, padx=10, pady=10)
 
 navbar.add(discoverFrame, text="Brew Discover")
 navbar.add(ttk.Frame(navbar), text="Brew Settings")
