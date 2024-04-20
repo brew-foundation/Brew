@@ -6,7 +6,7 @@ template = {
     'manifest': {
         'version': '0.1.0-dev',
 
-        'build': '2024.04.17.0.1.0Dev1',
+        'build': '2024.04.19.0.1.0Dev1',
     },
 
     'settings': {
