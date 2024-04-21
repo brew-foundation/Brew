@@ -5,7 +5,7 @@ const config = {
   title: 'Brew',
   favicon: 'img/favicon.ico',
 
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://appbrew.netfily.app',
   baseUrl: '/',
 
   onBrokenLinks: 'throw',
@@ -56,9 +56,15 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'docSidebar',
             position: 'left',
-            label: 'Docs',
+            label: 'Pages 📃',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/blog', label: 'Blog 📜', position: 'left'},
+          {
+            type: 'docSidebar',
+            sidebarId: 'legalSidebar',
+            position: 'right',
+            label: 'Legal 🔨',
+          },
           {
             href: 'https://github.com/brew-foundation/brew',
             label: 'GitHub',
@@ -70,10 +76,10 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: 'Brew',
             items: [
               {
-                label: 'Getting Started',
+                label: 'Home',
                 to: '/',
               },
             ],
@@ -98,6 +104,11 @@ const config = {
           },
         ],
         copyright: `Copyright © ${new Date().getFullYear()} Brew Foundation. Built with Docusaurus.`,
+      },
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: true,
+        respectPrefersColorScheme: false,
       },
       prism: {
         theme: prismThemes.github,
