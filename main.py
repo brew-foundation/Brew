@@ -15,16 +15,18 @@ settings = config['settings']
 ui_settings = config['ui_settings']
 manifest = config['manifest']
 
-if ui_settings is not None and ui_settings['theme'] == None:
+if ui_settings is not None and ui_settings['theme'] is None:
     root = ttk.Window(title="Brew 🍵", themename='darkly', size=[600, 800], resizable=[False, False])
 else:
-    root = ttk.Window(title="Brew 🍵", themename=ui_settings['theme'] if ui_settings else 'darkly', size=[600, 800], resizable=[False, False])
+    root = ttk.Window(title="Brew 🍵", themename=ui_settings['theme'] if ui_settings else 'darkly', size=[600, 800],
+                      resizable=[False, False])
 
 if config['reset_occurred']:
     resetToast = ToastNotification(
         title="Setting configuration has been reset",
-        message=f"Version, {template.get('manifest').get('build')} has been released. To ensure compatibility, settings have been reset to default. Sorry for the inconvenience.",
-        duration=None,
+        message=f"Version, {template.get('manifest').get('build')} has been released. "
+                "To ensure compatibility, settings have been reset to default. Sorry for the inconvenience.",
+        duration=100000,
         alert=True
     )
     resetToast.show_toast()
@@ -50,6 +52,7 @@ def update_messages():
     # Schedule the next update
     root.after(1000, update_messages)
 
+
 def login():
     global authSuccess  # Indicate that we're using the global variable
     authSuccess = api_login(user.get(), cpass.get())
@@ -61,26 +64,32 @@ def login():
     else:
         print("Auth Failed")
 
+
 def is_valid_email(email):
     # Simple regex for validating an email address
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(pattern, email) is not None
 
+
 def signup():
     email = regEmail.get()
-    password = regPassword.get()
-    user = regUser.get()
+    p = regPassword.get()
+    u = regUser.get()
     if not is_valid_email(email):
-        Messagebox.show_error(message="An error has occurred while registering your account.", title='Account registration failed!', alert=True,) 
+        Messagebox.show_error(message="An error has occurred while registering your account.",
+                              title='Account registration failed!', alert=True,)
         return False
-    if password == ConfirmRegPassword.get():
+    if p == ConfirmRegPassword.get():
         print(f"{regUser.get()} - {regEmail.get()} - {regPassword.get()}")
-        if api_register(email=email, username=user, cpass=password):
-            Messagebox.ok(message="Account has been registered with Brew Services. Please login now.", title='Account registration successful!', alert=True,) 
+        if api_register(email=email, username=u, cpass=p):
+            Messagebox.ok(message="Account has been registered with Brew Services. Please login now.",
+                          title='Account registration successful!', alert=True,)
         else:
-            Messagebox.show_error(message="An error has occurred while registering your account.", title='Account registration failed!', alert=True,) 
+            Messagebox.show_error(message="An error has occurred while registering your account.",
+                                  title='Account registration failed!', alert=True,)
     else:
         Messagebox.show_error(message="Passwords do not match.", title='Credential(s) not matching!', alert=True,) 
+
 
 def send():
     message_text = Message.get()
@@ -88,15 +97,6 @@ def send():
     count = len(message_text)
 
     if count <= 300:
-
-        if previous_message == message_text:
-            messageSame = ToastNotification( 
-                title="Message blocked!",
-                message="Please change your message as its the same.",
-                duration=5000,
-                alert=True
-            )
-        previous_message = message_text
         send_message(message_text)
 
         sent = ToastNotification(
@@ -107,16 +107,17 @@ def send():
         )
         sent.show_toast()
     else:
-        charLimit = ToastNotification(
+        climit = ToastNotification(
             title="Message couldn't be sent!",
             message=f"Your message is greater than 300 characters. Message had {count} characters.",
             duration=10000,
             alert=True
         )
-        charLimit.show_toast()
+        climit.show_toast()
+# Login area
 
-#* Login area
-logLabelFrame = ttk.LabelFrame(root, text=" Brew Account ",bootstyle="light")
+
+logLabelFrame = ttk.LabelFrame(root, text=" Brew Account ", bootstyle="light")
 logLabelFrame.pack(fill="x", padx=10, pady=10)
 
 userLabel = ttk.Label(master=logLabelFrame, text="Email")
@@ -134,7 +135,7 @@ cpass = ttk.StringVar()
 password = ttk.Entry(master=logLabelFrame, bootstyle="dark", textvariable=cpass, show="*")
 password.pack(fill="x", padx=10, pady=10)
 
-#* When logged in with a valid session ID
+# When logged in with a valid session ID
 navbar = ttk.Notebook(root, bootstyle="dark")
 
 discoverFrame = ttk.Frame(navbar)
@@ -148,9 +149,10 @@ navbar.add(ttk.Frame(navbar), text="Brew Settings")
 
 ttk.Separator(master=logLabelFrame, bootstyle="dark").pack(fill="x", padx=10, pady=10)
 
-loginButton = ttk.Button(master=logLabelFrame, text="Login into Brew", bootstyle="success", command=login).pack(fill="x", padx=10, pady=5)
+loginButton = (ttk.Button(master=logLabelFrame, text="Login into Brew", bootstyle="success", command=login).
+               pack(fill="x", padx=10, pady=5))
 
-#* Registration
+# Registration
 regLabelFrame = ttk.LabelFrame(logLabelFrame, text=" Register a Brew account ",bootstyle="caution")
 regLabelFrame.pack(fill="x", padx=10, pady=10)
 

@@ -7,6 +7,18 @@ const sidebars = {
     },
   ],
 
+  devSidebar: [
+    {
+      type: 'doc',
+      id: 'developers/contributing',
+    },
+  ],
+  communitySidebar: [
+    {
+      type: 'doc',
+      id: 'community/community',
+    },
+  ],
   legalSidebar: [
     {
       type: 'doc',

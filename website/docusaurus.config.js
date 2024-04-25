@@ -26,7 +26,7 @@ const config = {
           sidebarPath: './sidebars.js',
           routeBasePath: '/',
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/brew-foundation/brew/tree/main/website',
         },
         blog: {
           showReadingTime: true,
@@ -58,6 +58,27 @@ const config = {
             position: 'left',
             label: 'Pages 📃',
           },
+          {
+          type: 'dropdown',
+          label: 'Community ✨',
+          position: 'right',
+          items: [
+            {
+            type: 'docSidebar',
+            sidebarId: 'communitySidebar',
+            label: 'Community ✨',
+            },
+            {
+            type: 'docSidebar',
+            sidebarId: 'devSidebar',
+            label: 'Developers 💻',
+            },
+            {
+              label: 'brew-api 📦',
+              href: 'https://www.github.com/brew-foundation/brew-api',
+            },
+          ],
+        },
           {to: '/blog', label: 'Blog 📜', position: 'left'},
           {
             type: 'docSidebar',
@@ -82,6 +103,14 @@ const config = {
                 label: 'Home',
                 to: '/',
               },
+              {
+                label: 'Developers',
+                to: '/developers/',
+              },
+              {
+                label: 'Community',
+                to: '/community/',
+              },
             ],
           },
           {
@@ -99,6 +128,13 @@ const config = {
               {
                 label: 'Blog',
                 to: '/blog',
+              },
+              {
+                html: `
+                    <a href="https://www.netlify.com" target="_blank" rel="noreferrer noopener" aria-label="Deploys by Netlify">
+                      <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" width="114" height="51" />
+                    </a>
+                  `,
               },
             ],
           },
