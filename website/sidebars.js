@@ -24,10 +24,6 @@ const sidebars = {
       type: 'doc',
       id: 'legal/privacy-policy',
     },
-    {
-      type: 'doc',
-      id: 'legal/tos',
-    },
   ],
 };
 
