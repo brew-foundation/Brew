@@ -1,5 +1,7 @@
 import ttkbootstrap as ttk
-import re 
+import re
+from pydub import AudioSegment
+from pydub.playback import play
 from ttkbootstrap.constants import *
 from ttkbootstrap.toast import ToastNotification
 from ttkbootstrap.scrolled import ScrolledFrame
@@ -31,9 +33,13 @@ if config['reset_occurred']:
     )
     resetToast.show_toast()
 
+previous_responses = []
 
 def update_messages():
     global messages_widgets
+    global ltk
+    global previous_responses
+    
     # Destroy all widgets currently in the ScrolledFrame
     for widget in messages_widgets:
         widget.destroy()
@@ -41,6 +47,7 @@ def update_messages():
     messages_widgets.clear()
 
     responses = get_messages()
+
     for response in responses:
         # Create a new label for each message
         message_label = ttk.Label(messages, text=f'{response["user"]} - {response["message"]}')
@@ -48,10 +55,19 @@ def update_messages():
         # Add the newly created label to the list for tracking
         messages_widgets.append(message_label)
 
+    # Check for new responses
+    new_responses = [response for response in responses if response not in previous_responses]
+
+    if new_responses:
+        ping = AudioSegment.from_wav("assets/ping.wav")
+        play(ping)
+
+    # Update previous_responses with the latest responses
+    previous_responses = responses[:]
+    
     messages.yview_scroll(50, 'px')
     # Schedule the next update
-    root.after(1000, update_messages)
-
+    root.after(ms=2000, func=update_messages)
 
 def login():
     global authSuccess  # Indicate that we're using the global variable
@@ -61,8 +77,21 @@ def login():
         root.update()
         navbar.pack(fill="both", padx=10, pady=10)
         update_messages()
+        logGood = ToastNotification(
+            title="Logged in!",
+            message="Welcome back to Brew!",
+            duration=5000,
+            alert=False
+        )
+        logGood.show_toast()
     else:
-        print("Auth Failed")
+        logBad = ToastNotification(
+            title="Woah!",
+            message="Invalid email or password!",
+            duration=10000,
+            alert=True
+        )
+        logBad.show_toast()
 
 
 def is_valid_email(email):
@@ -77,18 +106,18 @@ def signup():
     u = regUser.get()
     if not is_valid_email(email):
         Messagebox.show_error(message="An error has occurred while registering your account.",
-                              title='Account registration failed!', alert=True,)
+                              title='Account registration failed!', alert=True, )
         return False
     if p == ConfirmRegPassword.get():
         print(f"{regUser.get()} - {regEmail.get()} - {regPassword.get()}")
         if api_register(email=email, username=u, cpass=p):
             Messagebox.ok(message="Account has been registered with Brew Services. Please login now.",
-                          title='Account registration successful!', alert=True,)
+                          title='Account registration successful!', alert=True, )
         else:
             Messagebox.show_error(message="An error has occurred while registering your account.",
-                                  title='Account registration failed!', alert=True,)
+                                  title='Account registration failed!', alert=True, )
     else:
-        Messagebox.show_error(message="Passwords do not match.", title='Credential(s) not matching!', alert=True,) 
+        Messagebox.show_error(message="Passwords do not match.", title='Credential(s) not matching!', alert=True, )
 
 
 def send():
@@ -114,15 +143,15 @@ def send():
             alert=True
         )
         climit.show_toast()
-# Login area
 
+
+# Login area
 
 logLabelFrame = ttk.LabelFrame(root, text=" Brew Account ", bootstyle="light")
 logLabelFrame.pack(fill="x", padx=10, pady=10)
 
 userLabel = ttk.Label(master=logLabelFrame, text="Email")
 userLabel.pack(fill="x", padx=10, pady=5)
-
 
 user = ttk.StringVar()
 username = ttk.Entry(master=logLabelFrame, bootstyle="dark", textvariable=user)
@@ -153,7 +182,7 @@ loginButton = (ttk.Button(master=logLabelFrame, text="Login into Brew", bootstyl
                pack(fill="x", padx=10, pady=5))
 
 # Registration
-regLabelFrame = ttk.LabelFrame(logLabelFrame, text=" Register a Brew account ",bootstyle="caution")
+regLabelFrame = ttk.LabelFrame(logLabelFrame, text=" Register a Brew account ", bootstyle="caution")
 regLabelFrame.pack(fill="x", padx=10, pady=10)
 
 userLabel = ttk.Label(master=regLabelFrame, text="Username")
@@ -184,14 +213,14 @@ ConfirmRegPassword = ttk.StringVar()
 ConfirmRegPassword = ttk.Entry(master=regLabelFrame, bootstyle="dark", textvariable=ConfirmRegPassword, show="*")
 ConfirmRegPassword.pack(fill="x", padx=10, pady=10)
 
-createAccountButton = ttk.Button(master=regLabelFrame, text="Create Account", bootstyle="dark", command=signup).pack(fill="x", padx=10, pady=5)
+createAccountButton = ttk.Button(master=regLabelFrame, text="Create Account", bootstyle="dark", command=signup).pack(
+    fill="x", padx=10, pady=5)
 
 #* Brew discover page
 Message = ttk.StringVar()
 MessageEntry = ttk.Entry(master=discoverFrame, bootstyle="dark", textvariable=Message)
 
 MessageSendButton = ttk.Button(master=discoverFrame, bootstyle="info", text="Send message", command=send)
-
 
 MessageEntry.pack(fill="x", padx=10, pady=10)
 MessageSendButton.pack(fill="x", padx=10, pady=10)

@@ -1,4 +1,6 @@
 import os
+
+import gotrue.errors
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
@@ -18,8 +20,12 @@ def get_user_data():
     }
 
 def api_login(user, cpass):
-    session = supabase.auth.sign_in_with_password({ "email": user, "password": cpass })
-
+    try:
+        session = supabase.auth.sign_in_with_password({ "email": user, "password": cpass })
+    except gotrue.errors.AuthApiError:
+        return False
+    except gotrue.errors.AuthInvalidCredentialsError:
+        return False
     return session, True
 def api_register(email: str, cpass: str, username: str):
     supabase.auth.sign_up({ "email": email, "password": cpass })
