@@ -18,7 +18,7 @@ to the first headline...
 
 
 ## v0.1.0 Release
-After a considerable amount of feedback from testing, we are excited to announce the release date will be on **May 2, 2024.**
+After a considerable amount of feedback from testing, we are excited to announce the release date will be on **May 20, 2024.**
 
 ## New developer API coming soon
 We're also announcing a new API which will allow for developers to build applications and systems that works with Brew
